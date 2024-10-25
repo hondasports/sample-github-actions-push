@@ -14,6 +14,7 @@ on:
     branches:
       - main
       - develop
+    # 無限起動しないよう設定
     paths-ignore:
       - dist.zip
   # 手動実行できるように設定
@@ -46,7 +47,7 @@ jobs:
           git add dist.zip
           git commit -m "Add dist.zip by bot"
 
-      - name: 圧縮したdistをトリガーしたworkflowのブランチへpushする
+      - name: 圧縮したdist.zipをトリガーしたworkflowのブランチへpush
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
