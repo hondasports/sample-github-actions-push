@@ -44,7 +44,7 @@ jobs:
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
           git add dist.zip
-          git add commit -m "Add dist.zip by bot"
+          git commit -m "Add dist.zip by bot"
 
       - name: 圧縮したdistをトリガーしたworkflowのブランチへpushする
         uses: ad-m/github-push-action@master
