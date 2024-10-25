@@ -44,8 +44,8 @@ jobs:
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add dist.zip
-          git commit -m "Add dist.zip by bot"
+          git add dist${{ steps.get_version.outputs.version }}.tar.gz
+          git commit -m "Add dist${{ steps.get_version.outputs.version }}.tar.gz by bot"
 
       - name: 圧縮したdist.zipをトリガーしたworkflowのブランチへpush
         uses: ad-m/github-push-action@master
