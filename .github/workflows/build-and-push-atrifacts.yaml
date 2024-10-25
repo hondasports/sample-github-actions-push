@@ -27,6 +27,7 @@ jobs:
         run: |
           VERSION="$(jq -r '.version' package.json | tr '.' '_')"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
+          echo "archive_filename=dist_${VERSION}." >> $GITHUB_OUTPUT
 
       - name: node.jsのセットアップ
         uses: actions/setup-node@v4
@@ -38,14 +39,14 @@ jobs:
       - run: pnpm run build
 
       - name: ビルド後のdistをtar.gz圧縮する
-        run: tar -zcvf dist${{ steps.get_version.outputs.version }}.tar.gz dist
+        run: tar -zcvf ${{ steps.get_version.outputs.archive_filename }}.tar.gz dist
 
       - name: 圧縮したdist.zipをコミットする
         run: |
           git config --local user.email "github-actions[bot]@users.noreply.github.com"
           git config --local user.name "github-actions[bot]"
-          git add dist${{ steps.get_version.outputs.version }}.tar.gz
-          git commit -m "Add dist${{ steps.get_version.outputs.version }}.tar.gz by bot"
+          git add ${{ steps.get_version.outputs.archive_filename }}.tar.gz
+          git commit -m "Add ${{ steps.get_version.outputs.archive_filename }}.tar.gz by bot"
 
       - name: 圧縮したdist.zipをトリガーしたworkflowのブランチへpush
         uses: ad-m/github-push-action@master
