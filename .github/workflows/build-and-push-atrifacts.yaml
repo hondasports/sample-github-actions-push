@@ -1,12 +1,3 @@
-# ## したいこと
-# ### トリガー
-#   * developもしくは、mainブランチにプッシュをトリガーにworkflowを起動する。
-# ### 起動したworkflowは以下の事をする。
-#   1. vueプロジェクトのビルド
-#   2. ビルドしたdistを圧縮する
-#   3. 圧縮したdistを起動したworkflowのブランチにpushする
-#   4. 終了
-
 name: build-and-push-atrifacts
 run-name: ${{ github.actor }} is building and pushing artifacts
 on:
@@ -23,6 +14,8 @@ permissions:
   contents: write
 jobs:
   build-vue:
+    # ジョブ全体のタイムアウト(min)を設定
+    timeout-minutes: 5
     runs-on: ubuntu-latest
     steps:
       - name: コードをチェックアウト
