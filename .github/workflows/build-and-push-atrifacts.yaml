@@ -8,6 +8,7 @@ on:
     # 無限起動しないよう設定
     paths-ignore:
       - dist.zip
+      - .github/ISSUE_TEMPLATE/**
   # 手動実行できるように設定
   workflow_dispatch:
 permissions:
@@ -21,17 +22,23 @@ jobs:
       - name: コードをチェックアウト
         uses: actions/checkout@v4
 
+      - name: package.jsonからバージョンを抜き出す
+        id: get_version
+        run: |
+          VERSION="$(jq -r ''.version' package.json | tr '.' '_')"
+          echo "version=$VERSION"
+
       - name: node.jsのセットアップ
         uses: actions/setup-node@v4
-
         with:
           node-version: 22
+
       - uses: pnpm/action-setup@v4
       - run: pnpm install
       - run: pnpm run build
 
-      - name: ビルド後のdistをzip圧縮する
-        run: zip -r dist.zip dist
+      - name: ビルド後のdistをtar.gz圧縮する
+        run: tar -zcvf dist${{ steps.get_version.outputs.version }}.tar.gz dist
 
       - name: 圧縮したdist.zipをコミットする
         run: |
