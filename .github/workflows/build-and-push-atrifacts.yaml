@@ -25,7 +25,7 @@ jobs:
       - name: package.jsonからバージョンを抜き出す
         id: get_version
         run: |
-          VERSION="$(jq -r ''.version' package.json | tr '.' '_')"
+          VERSION="$(jq -r '.version' package.json | tr '.' '_')"
           echo "version=$VERSION"
 
       - name: node.jsのセットアップ
