@@ -1,0 +1,48 @@
+# ## したいこと
+# ### トリガー
+#   * developもしくは、mainブランチにプッシュをトリガーにworkflowを起動する。
+# ### 起動したworkflowは以下の事をする。
+#   1. vueプロジェクトのビルド
+#   2. ビルドしたdistを圧縮する
+#   3. 圧縮したdistを起動したworkflowのブランチにpushする
+#   4. 終了
+
+name: build-and-push-atrifacts
+run-name: ${{ github.actor }} is building and pushing artifacts
+on:
+  push:
+    branches:
+      - main
+      - develop
+    paths-ignore:
+      - dist.zip
+  # 手動実行できるように設定
+  workflow_dispatch:
+permissions:
+  contents: write
+jobs:
+  build-vue:
+    runs-on: ubuntu-latest
+    steps:
+      - name: コードをチェックアウト
+        uses: actions/checkout@v4
+
+      - name: node.jsのセットアップ
+        uses: actions/setup-node@v4
+
+        with:
+          node-version: 22
+      - uses: pnpm/action-setup@v4
+      - run: pnpm install
+      - run: pnpm run build
+
+      - name: ビルド後のdistをzip圧縮する
+        run: zip -r dist.zip dist
+
+      - name: 圧縮したdistをトリガーしたworkflowのブランチへpushする
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.ref }}
+          force: true
+          directory: dist.zip
